@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Otter Airways</string>
+    <string name="create_account">Create Account</string>
+    <string name="reserve_seat">Reserve Seat</string>
+    <string name="cancel_reservation">Cancel Reservation</string>
+    <string name="manage_system">Manage System</string>
+</resources>
