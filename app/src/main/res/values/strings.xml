@@ -4,4 +4,7 @@
     <string name="reserve_seat">Reserve Seat</string>
     <string name="cancel_reservation">Cancel Reservation</string>
     <string name="manage_system">Manage System</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
 </resources>
