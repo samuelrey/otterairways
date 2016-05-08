@@ -5,9 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
-import java.util.ArrayList;
 
 /**
  * Created by psycho on 5/5/16.
@@ -55,7 +53,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return;
     }
 
-    public void insertAccount(Account account) {
+    public void insertAccount(Account account) throws UsernameAlreadyExists {
+        if( selectAccount(account.getUsername()) != null ) {
+            throw new UsernameAlreadyExists(account.getUsername());
+        }
+
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -64,6 +66,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         database.insert(AccountEntry.TABLE_NAME, null, contentValues);
         database.close();
+    }
+
+    public Account selectAccount(String username) {
+        Account account = null;
+
+        SQLiteDatabase database = this.getReadableDatabase();
+        String query = "SELECT * FROM " + AccountEntry.TABLE_NAME + " WHERE " +
+                AccountEntry.COL_USERNAME + " = '" + username + "'";
+
+        Cursor cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()) {
+            account = new Account(cursor.getString(0), cursor.getString(1));
+        }
+
+        cursor.close();
+        database.close();
+        return account;
     }
 
     // table names and columns
@@ -88,5 +107,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COL_FLIGHT_NO = "flight_no";
         public static final String COL_NO_SEATS = "no_seats";
         public static final String COL_USERNAME = "username";
+    }
+
+    // database related exceptions
+    public class UsernameAlreadyExists extends Exception {
+        public UsernameAlreadyExists(String message) {
+            super(message);
+        }
     }
 }

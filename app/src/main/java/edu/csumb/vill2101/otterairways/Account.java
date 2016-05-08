@@ -19,4 +19,13 @@ public class Account {
     public String getPassword() {
         return password;
     }
+
+    public boolean equals(Object obj) {
+        if( obj instanceof Account ) {
+            Account account = (Account) obj;
+            return this.username.equals(account.username) && this.password.equals(account.password);
+        }
+
+        return false;
+    }
 }
