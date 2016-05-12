@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 import edu.csumb.vill2101.otterairways.models.Account;
 import edu.csumb.vill2101.otterairways.models.Flight;
@@ -23,6 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
+
         // Create account table
         String CREATE_ACCOUNT_TABLE = "CREATE TABLE IF NOT EXISTS " + AccountEntry.TABLE_NAME +
                 " (" + AccountEntry.COL_USERNAME + " TEXT PRIMARY KEY," +
@@ -32,7 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String CREATE_FLIGHT_TABLE = "CREATE TABLE IF NOT EXISTS " + FlightEntry.TABLE_NAME +
                 " (" + FlightEntry.COL_FLIGHT_NO + " TEXT PRIMARY KEY," +
                 FlightEntry.COL_DEPARTURE + " TEXT," + FlightEntry.COL_ARRIVAL + " TEXT," +
-                FlightEntry.COL_TIME + " TEXT," + FlightEntry.COL_CAPACITY + " INTEGER" +
+                FlightEntry.COL_TIME + " TEXT," + FlightEntry.COL_CAPACITY + " INTEGER," +
                 FlightEntry.COL_PRICE + " REAL)";
 
         // Create reservation table
@@ -53,9 +57,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        return;
+        try {
+            String drop = "DROP TABLE IF EXISTS ";
+            database.execSQL(drop + AccountEntry.TABLE_NAME);
+            database.execSQL(drop + FlightEntry.TABLE_NAME);
+            database.execSQL(drop + ReservationEntry.TABLE_NAME);
+            onCreate(database);
+        } catch(Exception e) {
+            Log.d("Otter", e.toString());
+        }
     }
 
+    @Override
+    public void onDowngrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+        try {
+            String drop = "DROP TABLE IF EXISTS ";
+            database.execSQL(drop + AccountEntry.TABLE_NAME);
+            database.execSQL(drop + FlightEntry.TABLE_NAME);
+            database.execSQL(drop + ReservationEntry.TABLE_NAME);
+            onCreate(database);
+        } catch(Exception e) {
+            Log.d("Otter", e.toString());
+        }
+    }
+
+    // insert
     public void insertAccount(Account account) throws UsernameAlreadyExists {
         if( selectAccount(account.getUsername()) != null ) {
             throw new UsernameAlreadyExists(account.getUsername());
@@ -90,6 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database.close();
     }
 
+    // select
     public Account selectAccount(String username) {
         Account account = null;
 
@@ -124,7 +151,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return flight;
     }
 
-    // table names and columns
+    public ArrayList<Flight> selectAllFlights() {
+        ArrayList<Flight> flights = new ArrayList<>();
+
+        SQLiteDatabase database = this.getReadableDatabase();
+        String query = "SELECT * FROM " + FlightEntry.TABLE_NAME;
+
+        Cursor cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()) {
+            while(cursor.moveToNext()) {
+                flights.add(new Flight(cursor.getString(0), cursor.getString(1), cursor.getString(2),
+                        cursor.getString(3), cursor.getInt(4), cursor.getDouble(5)));
+            }
+        }
+
+        return flights;
+    }
+
+    // schemas
     public static abstract class AccountEntry {
         public static final String TABLE_NAME = "account";
         public static final String COL_USERNAME = "username";
@@ -148,7 +192,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COL_USERNAME = "username";
     }
 
-    // database related exceptions
+    // exceptions
     public class UsernameAlreadyExists extends Exception {
         public UsernameAlreadyExists(String message) {
             super(message);

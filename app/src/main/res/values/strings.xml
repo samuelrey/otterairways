@@ -6,6 +6,8 @@
     <string name="password">Password</string>
     <string name="success">Success</string>
     <string name="fail">Fail</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
     <string name="login">Login</string>
     <string name="debug">Otter</string>
 
@@ -22,4 +24,18 @@
 
     <!-- Reserve Seat -->
     <string name="reserve_seat_search">Reserve Seat</string>
+    <string-array name="locations">
+        <item>Monterey</item>
+        <item>Seattle</item>
+        <item>Los Angeles</item>
+    </string-array>
+    <string-array name="tickets">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
 </resources>

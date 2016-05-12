@@ -1,34 +1,125 @@
 package edu.csumb.vill2101.otterairways.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import edu.csumb.vill2101.otterairways.R;
+import edu.csumb.vill2101.otterairways.activities.ReserveSeatActivity;
 
 /**
  * Created by psycho on 5/11/16.
  */
 public class SearchFlightFragment extends Fragment {
 
+    public interface FlightSearch {
+        void passFlightData(String destination, String departure, String no_tickets);
+    }
+
+    View view;
+    ArrayAdapter<CharSequence> locationAdapter;
+    ArrayAdapter<CharSequence> ticketAdapter;
+    FlightSearch flightData;
+    Spinner destination;
+    Spinner departure;
+    Spinner no_tickets;
+    Button back;
+    Button next;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            flightData = (FlightSearch) context;
+        } catch(ClassCastException e) {
+            throw new ClassCastException(e.toString() + " must implement FlightSearch");
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search_flight, container, false);
-        ArrayList<String> locations = new ArrayList<>();
-        locations.add("Seattle");
-        locations.add("Monterey");
-        locations.add("Los Angeles");
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, locations);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner destination = (Spinner) view.findViewById(R.id.destination);
-        destination.setAdapter(arrayAdapter);
-        destination.setSelection(0);
+        view = inflater.inflate(R.layout.fragment_search_flight, container, false);
+
+        locationAdapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(),
+                R.array.locations, R.layout.item_spinner);
+        locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationAdapter.notifyDataSetChanged();
+
+        ticketAdapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(),
+                R.array.tickets, R.layout.item_spinner);
+        ticketAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ticketAdapter.notifyDataSetChanged();
+
+        destination = (Spinner) view.findViewById(R.id.destination);
+        destination.setAdapter(locationAdapter);
+        destination.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        departure = (Spinner) view.findViewById(R.id.departure);
+        departure.setAdapter(locationAdapter);
+        departure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        no_tickets = (Spinner) view.findViewById(R.id.no_tickets);
+        no_tickets.setAdapter(ticketAdapter);
+        no_tickets.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        back = (Button) view.findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().finish();
+            }
+        });
+
+        next = (Button) view.findViewById(R.id.next);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flightData.passFlightData(destination.getSelectedItem().toString(),
+                        departure.getSelectedItem().toString(), no_tickets.getSelectedItem().toString());
+            }
+        });
         return view;
     }
 }

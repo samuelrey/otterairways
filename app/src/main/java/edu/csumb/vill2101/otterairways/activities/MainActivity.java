@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.deleteDatabase("otter_airways.db");
+
         database = new DatabaseHelper(this);
         try {
             database.insertAccount(new Account("A@lice5", "@cSit100"));
