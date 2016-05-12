@@ -1,14 +1,22 @@
-package edu.csumb.vill2101.otterairways;
+package edu.csumb.vill2101.otterairways.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, LoginDialog.PassLoginData {
+import edu.csumb.vill2101.otterairways.helpers.DatabaseHelper;
+import edu.csumb.vill2101.otterairways.R;
+import edu.csumb.vill2101.otterairways.models.Account;
+import edu.csumb.vill2101.otterairways.models.Flight;
 
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    Button createAccount;
+    Button reserveSeat;
+    Button cancelReservation;
+    Button manageSystem;
     DatabaseHelper database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,24 +28,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             database.insertAccount(new Account("A@lice5", "@cSit100"));
             database.insertAccount(new Account("$BriAn7", "123aBc#"));
             database.insertAccount(new Account("!chriS12!", "CHrIS12!!"));
+            database.insertFlight(new Flight("Otter101", "Monterey", "Los Angeles", "10:30(AM)", 10, 150.00));
         } catch (DatabaseHelper.UsernameAlreadyExists e) {
-            // database already exists and has initial data
+            // initial data exists
+        } catch (DatabaseHelper.FlightAlreadyExists e) {
+            // initial data exists
         }
 
-        Button createAccount = (Button) findViewById(R.id.create_account);
+        createAccount = (Button) findViewById(R.id.create_account);
         createAccount.setOnClickListener(this);
 
-        Button reserveSeat = (Button) findViewById(R.id.reserve_seat);
+        reserveSeat = (Button) findViewById(R.id.reserve_seat);
         reserveSeat.setOnClickListener(this);
 
-        Button cancelReservation = (Button) findViewById(R.id.cancel_reservation);
+        cancelReservation = (Button) findViewById(R.id.cancel_reservation);
         cancelReservation.setOnClickListener(this);
 
-        Button manageSystem = (Button) findViewById(R.id.manage_system);
+        manageSystem = (Button) findViewById(R.id.manage_system);
         manageSystem.setOnClickListener(this);
-
-        Button login = (Button) findViewById(R.id.login);
-        login.setOnClickListener(this);
     }
 
     @Override
@@ -60,23 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if( view.getId() == R.id.manage_system ) {
             Intent intent = new Intent(this, ManageSystemActivity.class);
             startActivity(intent);
-        }
-
-        // temp
-        else if( view.getId() == R.id.login ) {
-            LoginDialog ld = new LoginDialog();
-            ld.show(getFragmentManager(), "login_dialog");
-        }
-    }
-
-    @Override
-    public void loginData(String username, String password) {
-        Account account = new Account(username, password);
-        if( account.equals(database.selectAccount(username)) ) {
-            Toast.makeText(this, R.string.success, Toast.LENGTH_LONG).show();
-        }
-        else {
-            Toast.makeText(this, R.string.fail, Toast.LENGTH_LONG).show();
         }
     }
 }

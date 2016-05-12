@@ -1,4 +1,4 @@
-package edu.csumb.vill2101.otterairways;
+package edu.csumb.vill2101.otterairways.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import edu.csumb.vill2101.otterairways.R;
+
 /**
  * Created by psycho on 4/28/16.
  */
-public class LoginDialog extends DialogFragment {
+public class LoginFragment extends DialogFragment {
     public interface PassLoginData {
         void loginData(String username, String password);
     }

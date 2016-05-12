@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".CreateAccountActivity">
+        <activity android:name=".activities.CreateAccountActivity">
             <intent-filter>
                 <action android:name="edu.csumb.vill2101.otterairways.Create" />
 
@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ReserveSeatActivity">
+        <activity android:name=".activities.ReserveSeatActivity">
             <intent-filter>
                 <action android:name="edu.csumb.vill2101.otterairways.Reserve" />
 
@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".CancelReservationActivity">
+        <activity android:name=".activities.CancelReservationActivity">
             <intent-filter>
                 <action android:name="edu.csumb.vill2101.otterairways.Cancel" />
 
@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ManageSystemActivity">
+        <activity android:name=".activities.ManageSystemActivity">
             <intent-filter>
                 <action android:name="edu.csumb.vill2101.otterairways.Manage" />
 

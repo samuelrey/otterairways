@@ -1,10 +1,13 @@
-package edu.csumb.vill2101.otterairways;
+package edu.csumb.vill2101.otterairways.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import edu.csumb.vill2101.otterairways.models.Account;
+import edu.csumb.vill2101.otterairways.models.Flight;
 
 
 /**
@@ -68,6 +71,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database.close();
     }
 
+    public void insertFlight(Flight flight) throws FlightAlreadyExists {
+        if( selectFlight(flight.getFlightNo()) != null ) {
+            throw new FlightAlreadyExists(flight.getFlightNo());
+        }
+
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FlightEntry.COL_FLIGHT_NO, flight.getFlightNo());
+        contentValues.put(FlightEntry.COL_ARRIVAL, flight.getArrival());
+        contentValues.put(FlightEntry.COL_DEPARTURE, flight.getDeparture());
+        contentValues.put(FlightEntry.COL_TIME, flight.getTime());
+        contentValues.put(FlightEntry.COL_CAPACITY, flight.getCapacity());
+        contentValues.put(FlightEntry.COL_PRICE, flight.getPrice());
+
+        database.insert(FlightEntry.TABLE_NAME, null, contentValues);
+        database.close();
+    }
+
     public Account selectAccount(String username) {
         Account account = null;
 
@@ -77,12 +99,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = database.rawQuery(query, null);
         if(cursor.moveToFirst()) {
-            account = new Account(cursor.getString(0), cursor.getString(1));
+            account = new Account(cursor.getString(0));
         }
 
         cursor.close();
         database.close();
         return account;
+    }
+
+    public Flight selectFlight(String flight_no) {
+        Flight flight = null;
+
+        SQLiteDatabase database = this.getReadableDatabase();
+        String query = "SELECT * FROM " + FlightEntry.TABLE_NAME + " WHERE " +
+                FlightEntry.COL_FLIGHT_NO + " = '" + flight_no + "'";
+
+        Cursor cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()) {
+            flight = new Flight(cursor.getString(0));
+        }
+
+        cursor.close();
+        database.close();
+        return flight;
     }
 
     // table names and columns
@@ -112,6 +151,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // database related exceptions
     public class UsernameAlreadyExists extends Exception {
         public UsernameAlreadyExists(String message) {
+            super(message);
+        }
+    }
+
+    public class FlightAlreadyExists extends Exception {
+        public FlightAlreadyExists(String message) {
             super(message);
         }
     }

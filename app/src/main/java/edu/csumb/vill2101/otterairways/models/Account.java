@@ -1,11 +1,16 @@
-package edu.csumb.vill2101.otterairways;
+package edu.csumb.vill2101.otterairways.models;
 
 /**
  * Created by psycho on 5/5/16.
  */
 public class Account {
+
     private String username;
     private String password;
+
+    public Account(String username) {
+        this.username = username;
+    }
 
     public Account(String username, String password) {
         this.username = username;

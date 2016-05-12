@@ -1,4 +1,4 @@
-package edu.csumb.vill2101.otterairways;
+package edu.csumb.vill2101.otterairways.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -9,6 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import edu.csumb.vill2101.otterairways.helpers.DatabaseHelper;
+import edu.csumb.vill2101.otterairways.R;
+import edu.csumb.vill2101.otterairways.models.Account;
 
 /**
  * Created by psycho on 5/4/16.

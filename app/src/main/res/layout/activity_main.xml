@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context="edu.csumb.vill2101.otterairways.MainActivity" >
+    tools:context=".activities.MainActivity" >
 
     <Button
         android:id="@+id/create_account"
