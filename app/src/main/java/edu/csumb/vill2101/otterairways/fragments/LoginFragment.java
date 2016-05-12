@@ -39,7 +39,7 @@ public class LoginFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedStateInstance) {
         inflater = getActivity().getLayoutInflater();
-        view = inflater.inflate(R.layout.login_dialog, null);
+        view = inflater.inflate(R.layout.fragment_login, null);
         username = (EditText) view.findViewById(R.id.username);
         password = (EditText) view.findViewById(R.id.password);
 

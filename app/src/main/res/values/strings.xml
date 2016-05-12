@@ -20,4 +20,6 @@
     <string name="create_account_requires">Must contain at least one lowercase letter, one uppercase letter, one number and one special character.</string>
     <string name="create_account_exists">Username already exists.</string>
 
+    <!-- Reserve Seat -->
+    <string name="reserve_seat_search">Reserve Seat</string>
 </resources>
