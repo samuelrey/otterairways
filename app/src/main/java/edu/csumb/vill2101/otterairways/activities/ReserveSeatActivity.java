@@ -2,11 +2,10 @@ package edu.csumb.vill2101.otterairways.activities;
 
 
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.os.Bundle;
 
 import edu.csumb.vill2101.otterairways.R;
 import edu.csumb.vill2101.otterairways.fragments.ListFlightFragment;
@@ -20,21 +19,21 @@ public class ReserveSeatActivity extends AppCompatActivity implements SearchFlig
     private String destination;
     private String departure;
     private String no_tickets;
-    private static FragmentManager fragmentManager;
-    private static FragmentTransaction fragmentTransaction;
-    private static SearchFlightFragment searchFlightFragment;
-    private static ListFlightFragment listFlightFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reserve);
 
-        fragmentManager = getFragmentManager();
-        searchFlightFragment = new SearchFlightFragment();
-        fragmentManager.beginTransaction()
-                            .replace(android.R.id.content, searchFlightFragment)
-                            .commit();
+        if( findViewById(R.id.reserve_container) != null ) {
+            if( savedInstanceState != null ) {
+                return;
+            }
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.reserve_container, new SearchFlightFragment())
+                    .commit();
+        }
     }
 
     @Override
@@ -42,7 +41,10 @@ public class ReserveSeatActivity extends AppCompatActivity implements SearchFlig
         this.destination = destination;
         this.departure = departure;
         this.no_tickets = no_tickets;
-        listFlightFragment = new ListFlightFragment();
-        fragmentManager.beginTransaction().replace(android.R.id.content, listFlightFragment).commit();
+        ListFlightFragment listFlightFragment = new ListFlightFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.reserve_container, listFlightFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

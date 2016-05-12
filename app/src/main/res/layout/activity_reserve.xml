@@ -1,12 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <fragment
-        android:name="edu.csumb.vill2101.otterairways.fragments.SearchFlightFragment"
-        android:id="@+id/search_flight_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/reserve_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

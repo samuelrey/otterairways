@@ -1,6 +1,6 @@
 package edu.csumb.vill2101.otterairways.fragments;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
