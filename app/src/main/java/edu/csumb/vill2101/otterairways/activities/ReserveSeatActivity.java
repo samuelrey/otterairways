@@ -42,6 +42,11 @@ public class ReserveSeatActivity extends AppCompatActivity implements SearchFlig
         this.departure = departure;
         this.no_tickets = no_tickets;
         ListFlightFragment listFlightFragment = new ListFlightFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("destination", destination);
+        bundle.putString("departure", departure);
+        bundle.putString("no_tickets", no_tickets);
+        listFlightFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.reserve_container, listFlightFragment)
                 .addToBackStack(null)
