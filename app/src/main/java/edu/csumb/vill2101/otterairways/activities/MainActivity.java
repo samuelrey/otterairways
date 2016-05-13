@@ -23,14 +23,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.deleteDatabase("otter_airways.db");
-
         database = new DatabaseHelper(this);
         try {
             database.insertAccount(new Account("A@lice5", "@cSit100"));
             database.insertAccount(new Account("$BriAn7", "123aBc#"));
             database.insertAccount(new Account("!chriS12!", "CHrIS12!!"));
+            database.insertAccount(new Account("!admiM2", "!admiM2"));
             database.insertFlight(new Flight("Otter101", "Monterey", "Los Angeles", "10:30(AM)", 10, 150.00));
+            database.insertFlight(new Flight("Otter102", "Los Angeles", "Monterey", "1:00(PM)", 10, 150.00));
+            database.insertFlight(new Flight("Otter201", "Monterey", "Seattle", "11:00(AM)", 5, 200.00));
+            database.insertFlight(new Flight("Otter205", "Monterey", "Seattle", "3:45(PM)", 15, 150.00));
+            database.insertFlight(new Flight("Otter202", "Seattle", "Monterey", "2:10(PM)", 15, 200.00));
         } catch (DatabaseHelper.UsernameAlreadyExists e) {
             // initial data exists
         } catch (DatabaseHelper.FlightAlreadyExists e) {

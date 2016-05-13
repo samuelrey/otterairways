@@ -1,8 +1,8 @@
 package edu.csumb.vill2101.otterairways.fragments;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -16,11 +16,11 @@ import edu.csumb.vill2101.otterairways.R;
  * Created by psycho on 4/28/16.
  */
 public class LoginFragment extends DialogFragment {
-    public interface PassLoginData {
-        void loginData(String username, String password);
+    public interface LoginData {
+        void passLoginData(String username, String password);
     }
 
-    PassLoginData passLoginData;
+    LoginData passLoginData;
     LayoutInflater inflater;
     View view;
     EditText username;
@@ -30,7 +30,7 @@ public class LoginFragment extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            passLoginData = (PassLoginData) context;
+            passLoginData = (LoginData) context;
         } catch(ClassCastException e) {
             throw new ClassCastException(e.toString() + " must implement PassLoginData");
         }
@@ -54,7 +54,7 @@ public class LoginFragment extends DialogFragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        passLoginData.loginData(username.getText().toString(),
+                        passLoginData.passLoginData(username.getText().toString(),
                                 password.getText().toString());
                         dismiss();
                     }

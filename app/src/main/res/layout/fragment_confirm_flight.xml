@@ -3,24 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Spinner
-        android:id="@+id/departure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Spinner
-        android:id="@+id/destination"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Spinner
-        android:id="@+id/no_tickets"
+    <TextView
+        android:id="@+id/details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/next"
-        android:text="@string/next"
+        android:id="@+id/confirm"
+        android:text="@string/confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

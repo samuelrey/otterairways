@@ -46,12 +46,12 @@ public class SearchFlightFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_search_flight, container, false);
 
         locationAdapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(),
-                R.array.locations, R.layout.item_spinner);
+                R.array.locations, R.layout.item);
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationAdapter.notifyDataSetChanged();
 
         ticketAdapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(),
-                R.array.tickets, R.layout.item_spinner);
+                R.array.tickets, R.layout.item);
         ticketAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ticketAdapter.notifyDataSetChanged();
 

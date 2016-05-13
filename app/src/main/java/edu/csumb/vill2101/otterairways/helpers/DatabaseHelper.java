@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import edu.csumb.vill2101.otterairways.models.Account;
 import edu.csumb.vill2101.otterairways.models.Flight;
@@ -50,9 +52,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 AccountEntry.TABLE_NAME + "(" + AccountEntry.COL_USERNAME + ")" +
                 " ON DELETE CASCADE);";
 
+        // Create transaction table
+        String CREATE_TRANSACTION_TABLE = "CREATE TABLE IF NOT EXISTS " + TransactionEntry.TABLE_NAME +
+                " (" + TransactionEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                TransactionEntry.COL_TYPE + " TEXT," +
+                TransactionEntry.COL_DETAIL + " TEXT," +
+                TransactionEntry.COL_TIME + " TIMESTAMP);";
+
         database.execSQL(CREATE_ACCOUNT_TABLE);
         database.execSQL(CREATE_FLIGHT_TABLE);
         database.execSQL(CREATE_RESERVATION_TABLE);
+        database.execSQL(CREATE_TRANSACTION_TABLE);
     }
 
     @Override
@@ -62,6 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             database.execSQL(drop + AccountEntry.TABLE_NAME);
             database.execSQL(drop + FlightEntry.TABLE_NAME);
             database.execSQL(drop + ReservationEntry.TABLE_NAME);
+            database.execSQL(drop + TransactionEntry.TABLE_NAME);
             onCreate(database);
         } catch(Exception e) {
             Log.d("Otter", e.toString());
@@ -75,6 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             database.execSQL(drop + AccountEntry.TABLE_NAME);
             database.execSQL(drop + FlightEntry.TABLE_NAME);
             database.execSQL(drop + ReservationEntry.TABLE_NAME);
+            database.execSQL(drop + TransactionEntry.TABLE_NAME);
             onCreate(database);
         } catch(Exception e) {
             Log.d("Otter", e.toString());
@@ -86,7 +98,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if( selectAccount(account.getUsername()) != null ) {
             throw new UsernameAlreadyExists(account.getUsername());
         }
-
+        String type = "Insert Account";
+        String details = account.toString();
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -95,24 +108,67 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         database.insert(AccountEntry.TABLE_NAME, null, contentValues);
         database.close();
+
+        insertTransaction(type, details);
     }
 
     public void insertFlight(Flight flight) throws FlightAlreadyExists {
         if( selectFlight(flight.getFlightNo()) != null ) {
             throw new FlightAlreadyExists(flight.getFlightNo());
         }
-
+        String type = "Insert Flight";
+        String details = flight.toString();
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(FlightEntry.COL_FLIGHT_NO, flight.getFlightNo());
-        contentValues.put(FlightEntry.COL_ARRIVAL, flight.getArrival());
+        contentValues.put(FlightEntry.COL_ARRIVAL, flight.getDestination());
         contentValues.put(FlightEntry.COL_DEPARTURE, flight.getDeparture());
         contentValues.put(FlightEntry.COL_TIME, flight.getTime());
         contentValues.put(FlightEntry.COL_CAPACITY, flight.getCapacity());
         contentValues.put(FlightEntry.COL_PRICE, flight.getPrice());
 
         database.insert(FlightEntry.TABLE_NAME, null, contentValues);
+        database.close();
+
+        insertTransaction(type, details);
+    }
+
+    public void insertReservation(Flight flight, Account account, int no_tickets) throws NoSuchFlight, NoSuchAccount {
+        if( selectFlight(flight.getFlightNo()) == null ) {
+            throw new NoSuchFlight(flight.getFlightNo());
+        }
+        if( selectAccount(account.getUsername()) == null ) {
+            throw new NoSuchAccount(account.getUsername());
+        }
+
+        String type = "Insert Reservation";
+        String details = flight.toString() + " " + account.toString();
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ReservationEntry.COL_FLIGHT_NO, flight.getFlightNo());
+        contentValues.put(ReservationEntry.COL_NO_SEATS, no_tickets);
+        contentValues.put(ReservationEntry.COL_USERNAME, account.getUsername());
+
+        database.insert(ReservationEntry.TABLE_NAME, null, contentValues);
+        database.close();
+
+        insertTransaction(type, details);
+    }
+
+    private void insertTransaction(String type, String details) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TransactionEntry.COL_TYPE, type);
+        contentValues.put(TransactionEntry.COL_DETAIL, details);
+        contentValues.put(TransactionEntry.COL_TIME, dateFormat.format(date));
+
+        database.insert(TransactionEntry.TABLE_NAME, null, contentValues);
+        Log.d("Transaction", contentValues.toString());
         database.close();
     }
 
@@ -126,7 +182,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = database.rawQuery(query, null);
         if(cursor.moveToFirst()) {
-            account = new Account(cursor.getString(0));
+            account = new Account(cursor.getString(0), cursor.getString(1));
         }
 
         cursor.close();
@@ -179,7 +235,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String TABLE_NAME = "flight";
         public static final String COL_FLIGHT_NO = "flight_no";
         public static final String COL_DEPARTURE = "departure";
-        public static final String COL_ARRIVAL = "arrival";
+        public static final String COL_ARRIVAL = "destination";
         public static final String COL_TIME = "time";
         public static final String COL_CAPACITY = "capacity";
         public static final String COL_PRICE = "price";
@@ -192,6 +248,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COL_USERNAME = "username";
     }
 
+    public static abstract class TransactionEntry {
+        public static final String TABLE_NAME = "tx";
+        public static final String COL_ID = "id";
+        public static final String COL_TYPE = "type";
+        public static final String COL_DETAIL = "detail";
+        public static final String COL_TIME = "timestamp";
+    }
+
     // exceptions
     public class UsernameAlreadyExists extends Exception {
         public UsernameAlreadyExists(String message) {
@@ -201,6 +265,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public class FlightAlreadyExists extends Exception {
         public FlightAlreadyExists(String message) {
+            super(message);
+        }
+    }
+
+    public class NoSuchFlight extends Exception {
+        public NoSuchFlight(String message) {
+            super(message);
+        }
+    }
+
+    public class NoSuchAccount extends Exception {
+        public NoSuchAccount(String message) {
             super(message);
         }
     }
