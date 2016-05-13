@@ -13,6 +13,7 @@ import java.util.Date;
 
 import edu.csumb.vill2101.otterairways.models.Account;
 import edu.csumb.vill2101.otterairways.models.Flight;
+import edu.csumb.vill2101.otterairways.models.Reservation;
 
 
 /**
@@ -148,7 +149,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(ReservationEntry.COL_FLIGHT_NO, flight.getFlightNo());
-        contentValues.put(ReservationEntry.COL_NO_SEATS, no_tickets);
+        contentValues.put(ReservationEntry.COL_NO_SEATS, Integer.toString(no_tickets));
         contentValues.put(ReservationEntry.COL_USERNAME, account.getUsername());
 
         database.insert(ReservationEntry.TABLE_NAME, null, contentValues);
@@ -190,6 +191,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return account;
     }
 
+    public Account selectAdmin() {
+        Account account = null;
+
+        SQLiteDatabase database = this.getReadableDatabase();
+        String query = "SELECT * FROM " + AccountEntry.TABLE_NAME + " WHERE " +
+                AccountEntry.COL_USERNAME + " = !admiM2";
+
+        Cursor cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()) {
+            account = new Account(cursor.getString(0), cursor.getString(1));
+        }
+
+        cursor.close();
+        database.close();
+        return account;
+    }
+
     public Flight selectFlight(String flight_no) {
         Flight flight = null;
 
@@ -215,13 +233,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = database.rawQuery(query, null);
         if(cursor.moveToFirst()) {
-            while(cursor.moveToNext()) {
+            do {
                 flights.add(new Flight(cursor.getString(0), cursor.getString(1), cursor.getString(2),
                         cursor.getString(3), cursor.getInt(4), cursor.getDouble(5)));
-            }
+            } while(cursor.moveToNext());
         }
 
         return flights;
+    }
+
+    public ArrayList<Reservation> selectAllReservations(Account account) {
+        ArrayList<Reservation> reservations = new ArrayList<>();
+
+        SQLiteDatabase database = this.getReadableDatabase();
+        String query = "SELECT * FROM " + ReservationEntry.TABLE_NAME + " WHERE " +
+                ReservationEntry.COL_USERNAME + " = '" + account.getUsername() + "'";
+        Cursor cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()) {
+            do {
+                reservations.add(new Reservation(cursor.getString(0), Integer.parseInt(cursor.getString(2)),
+                        cursor.getString(1)));
+            } while(cursor.moveToNext());
+        }
+
+        return reservations;
+    }
+
+    // delete
+    public void deleteReservation(Reservation reservation) {
+        String type = "Delete Reservation";
+        String details = reservation.toString();
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        database.delete(ReservationEntry.TABLE_NAME,
+                ReservationEntry.COL_FLIGHT_NO + "='" + reservation.getFlightNo() + "' and " +
+                ReservationEntry.COL_USERNAME + "='" + reservation.getUsername() + "' and " +
+                ReservationEntry.COL_NO_SEATS + "=" + Integer.toString(reservation.getNoTickets()), null);
+        database.close();
+
+        insertTransaction(type, details);
     }
 
     // schemas

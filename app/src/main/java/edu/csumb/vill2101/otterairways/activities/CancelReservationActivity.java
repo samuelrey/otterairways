@@ -5,18 +5,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import edu.csumb.vill2101.otterairways.R;
+import edu.csumb.vill2101.otterairways.fragments.ConfirmCancelFragment;
 import edu.csumb.vill2101.otterairways.fragments.ConfirmFragment;
 import edu.csumb.vill2101.otterairways.fragments.ListReservationFragment;
 import edu.csumb.vill2101.otterairways.fragments.LoginFragment;
 import edu.csumb.vill2101.otterairways.helpers.DatabaseHelper;
 import edu.csumb.vill2101.otterairways.models.Account;
+import edu.csumb.vill2101.otterairways.models.Reservation;
 
 /**
  * Created by psycho on 5/4/16.
  */
-public class CancelReservationActivity extends AppCompatActivity implements LoginFragment.LoginData {
+public class CancelReservationActivity extends AppCompatActivity implements LoginFragment.LoginData, ListReservationFragment.ReservationList, ConfirmCancelFragment.ConfirmCancel {
 
     Account account;
+    Reservation reservation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,28 @@ public class CancelReservationActivity extends AppCompatActivity implements Logi
         }
         else {
             Toast.makeText(this, R.string.fail, Toast.LENGTH_LONG).show();
+            finish();
         }
+    }
+
+    @Override
+    public void passReservationData(Reservation reservation) {
+        this.reservation = reservation;
+        ConfirmCancelFragment confirmCancelFragment = new ConfirmCancelFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("reservation", reservation);
+        confirmCancelFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.cancel_container, confirmCancelFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void confirm() {
+        DatabaseHelper database = new DatabaseHelper(this);
+        database.deleteReservation(reservation);
+        finish();
     }
 }

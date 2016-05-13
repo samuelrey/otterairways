@@ -3,6 +3,7 @@ package edu.csumb.vill2101.otterairways.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 import edu.csumb.vill2101.otterairways.R;
 import edu.csumb.vill2101.otterairways.helpers.DatabaseHelper;
+import edu.csumb.vill2101.otterairways.models.Account;
 import edu.csumb.vill2101.otterairways.models.Flight;
 import edu.csumb.vill2101.otterairways.models.Reservation;
 
@@ -26,7 +28,7 @@ public class ListReservationFragment extends ListFragment implements AdapterView
     }
 
     ReservationList reservationList;
-    ArrayList<Flight> flights;
+    ArrayList<Reservation> reservations;
 
     @Override
     public void onAttach(Context context) {
@@ -40,49 +42,25 @@ public class ListReservationFragment extends ListFragment implements AdapterView
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list_flight, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_list_reservation, container, false);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        String destination = getArguments().getString("destination");
-        String departure = getArguments().getString("departure");
-        String no_tickets = getArguments().getString("no_tickets");
-
-        Flight search = new Flight("", departure, destination, "", Integer.parseInt(no_tickets), 0.0);
+        Account account = getArguments().getParcelable("account");
 
         DatabaseHelper database = new DatabaseHelper(getActivity());
-        flights = database.selectAllFlights();
+        reservations = database.selectAllReservations(account);
 
-        for( int i = 0; i < flights.size(); ) {
-            if( !search.getDeparture().equals(flights.get(i).getDeparture()) ) {
-                flights.remove(i);
-                continue;
-            }
-
-            if( !search.getDestination().equals(flights.get(i).getDestination()) ) {
-                flights.remove(i);
-                continue;
-            }
-
-            if( search.getCapacity() > flights.get(i).getCapacity() ) {
-                flights.remove(i);
-                continue;
-            }
-
-            i++;
-        }
-
-        ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.item, flights);
+        ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.item, reservations);
         setListAdapter(adapter);
         getListView().setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        flightList.passFlightData(flights.get(position));
+        reservationList.passReservationData(reservations.get(position));
     }
 }
