@@ -1,0 +1,88 @@
+package edu.csumb.vill2101.otterairways.fragments;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+
+import java.util.ArrayList;
+
+import edu.csumb.vill2101.otterairways.R;
+import edu.csumb.vill2101.otterairways.helpers.DatabaseHelper;
+import edu.csumb.vill2101.otterairways.models.Flight;
+import edu.csumb.vill2101.otterairways.models.Reservation;
+
+/**
+ * Created by psycho on 5/13/16.
+ */
+public class ListReservationFragment extends ListFragment implements AdapterView.OnItemClickListener {
+
+    public interface ReservationList {
+        void passReservationData(Reservation reservation);
+    }
+
+    ReservationList reservationList;
+    ArrayList<Flight> flights;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            reservationList = (ReservationList) context;
+        } catch(ClassCastException e) {
+            throw new ClassCastException(e.toString() + " must implement ReservationList");
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_list_flight, container, false);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        String destination = getArguments().getString("destination");
+        String departure = getArguments().getString("departure");
+        String no_tickets = getArguments().getString("no_tickets");
+
+        Flight search = new Flight("", departure, destination, "", Integer.parseInt(no_tickets), 0.0);
+
+        DatabaseHelper database = new DatabaseHelper(getActivity());
+        flights = database.selectAllFlights();
+
+        for( int i = 0; i < flights.size(); ) {
+            if( !search.getDeparture().equals(flights.get(i).getDeparture()) ) {
+                flights.remove(i);
+                continue;
+            }
+
+            if( !search.getDestination().equals(flights.get(i).getDestination()) ) {
+                flights.remove(i);
+                continue;
+            }
+
+            if( search.getCapacity() > flights.get(i).getCapacity() ) {
+                flights.remove(i);
+                continue;
+            }
+
+            i++;
+        }
+
+        ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.item, flights);
+        setListAdapter(adapter);
+        getListView().setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        flightList.passFlightData(flights.get(position));
+    }
+}
