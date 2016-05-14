@@ -14,6 +14,7 @@ import java.util.Date;
 import edu.csumb.vill2101.otterairways.models.Account;
 import edu.csumb.vill2101.otterairways.models.Flight;
 import edu.csumb.vill2101.otterairways.models.Reservation;
+import edu.csumb.vill2101.otterairways.models.Transaction;
 
 
 /**
@@ -196,7 +197,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase database = this.getReadableDatabase();
         String query = "SELECT * FROM " + AccountEntry.TABLE_NAME + " WHERE " +
-                AccountEntry.COL_USERNAME + " = !admiM2";
+                AccountEntry.COL_USERNAME + " = '!admiM2'";
 
         Cursor cursor = database.rawQuery(query, null);
         if(cursor.moveToFirst()) {
@@ -257,6 +258,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return reservations;
+    }
+
+    public ArrayList<Transaction> selectAllTransactions() {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+
+        SQLiteDatabase database = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TransactionEntry.TABLE_NAME;
+        Cursor cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()) {
+            do {
+                transactions.add(new Transaction(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
+                        cursor.getString(2), cursor.getString(3)));
+            } while(cursor.moveToNext());
+        }
+
+        return transactions;
     }
 
     // delete
