@@ -4,8 +4,8 @@
     <string name="app_name">Otter Airways</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="success">Success</string>
-    <string name="fail">Fail</string>
+    <string name="success">Successfully </string>
+    <string name="fail">Failed to </string>
     <string name="back">Back</string>
     <string name="next">Next</string>
     <string name="confirm">Confirm</string>
@@ -20,11 +20,14 @@
 
     <!-- Create Account -->
     <string name="create_account_format">^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&amp;*]).*$</string>
-    <string name="create_account_requires">Must contain at least one lowercase letter, one uppercase letter, one number and one special character.</string>
+    <string name="create_account_requires"> must contain at least one lowercase letter, one uppercase letter, one number and one special character.</string>
     <string name="create_account_exists">Username already exists.</string>
 
     <!-- Reserve Seat -->
     <string name="reserve_seat_search">Reserve Seat</string>
+    <string name="departure">Departure</string>
+    <string name="destination">Destination</string>
+    <string name="no_tickets">Number of Tickets</string>
     <string-array name="locations">
         <item>Monterey</item>
         <item>Seattle</item>

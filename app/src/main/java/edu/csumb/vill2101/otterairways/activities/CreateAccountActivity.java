@@ -23,7 +23,6 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
     Button button;
     EditText username;
     EditText password;
-    TextView response;
     DatabaseHelper database;
 
     @Override
@@ -37,7 +36,6 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
 
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-        response = (TextView) findViewById(R.id.response);
 
         database = new DatabaseHelper(this);
 
@@ -53,13 +51,13 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
             // verify username follows format
             if( !username.getText().toString().matches(getString(R.string.create_account_format)) ) {
                 counter++;
-                response.setText(R.string.create_account_requires);
+                Toast.makeText(this, "Username" + getString(R.string.create_account_requires), Toast.LENGTH_LONG).show();
             }
 
             // verify password follows format
             else if( !password.getText().toString().matches(getString(R.string.create_account_format)) ){
                 counter++;
-                response.setText(R.string.create_account_requires);
+                Toast.makeText(this, "Password" + getString(R.string.create_account_requires), Toast.LENGTH_LONG).show();
             }
 
             else {
@@ -68,11 +66,11 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
                 // handle username already exists
                 try {
                     database.insertAccount(new Account(username.getText().toString(), password.getText().toString()));
-                    Toast.makeText(this, R.string.success, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.success) + "created account", Toast.LENGTH_LONG).show();
                     finish();
                 } catch (DatabaseHelper.UsernameAlreadyExists e) {
                     counter++;
-                    response.setText(getString(R.string.create_account_exists));
+                    Toast.makeText(this, getString(R.string.create_account_exists), Toast.LENGTH_LONG).show();
                 }
             }
 

@@ -5,34 +5,46 @@
 
     <EditText
         android:id="@+id/flight_no"
+        android:hint="Flight Number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/departure"
+        android:hint="Departure"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/destination"
+        android:hint="Destination"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/time"
+        android:hint="Time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="datetime" />
 
     <EditText
         android:id="@+id/capacity"
+        android:hint="Capacity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number" />
 
     <EditText
         android:id="@+id/price"
+        android:hint="Price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal" />
+
+    <Button
+        android:id="@+id/add_flight"
+        android:text="Add Flight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -81,7 +81,7 @@ public class ReserveSeatActivity extends AppCompatActivity implements SearchFlig
                     .commit();
         }
         else {
-            Toast.makeText(this, R.string.fail, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.fail) + "login", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -91,10 +91,11 @@ public class ReserveSeatActivity extends AppCompatActivity implements SearchFlig
         try {
             database.insertReservation(flight, account, no_tickets);
         } catch(DatabaseHelper.NoSuchAccount e) {
-
+            Toast.makeText(this, getString(R.string.fail) + "reserve tickets", Toast.LENGTH_LONG).show();
         } catch(DatabaseHelper.NoSuchFlight e) {
-
+            Toast.makeText(this, getString(R.string.fail) + "reserve tickets", Toast.LENGTH_LONG).show();
         }
+        Toast.makeText(this, getString(R.string.success) + "reserved tickets", Toast.LENGTH_LONG).show();
         finish();
     }
 }

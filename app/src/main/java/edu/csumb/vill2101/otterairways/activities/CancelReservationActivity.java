@@ -49,7 +49,7 @@ public class CancelReservationActivity extends AppCompatActivity implements Logi
                     .commit();
         }
         else {
-            Toast.makeText(this, R.string.fail, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.fail) + "login", Toast.LENGTH_LONG).show();
             finish();
         }
     }
@@ -72,6 +72,7 @@ public class CancelReservationActivity extends AppCompatActivity implements Logi
     public void confirm() {
         DatabaseHelper database = new DatabaseHelper(this);
         database.deleteReservation(reservation);
+        Toast.makeText(this, getString(R.string.success) + "canceled reservation", Toast.LENGTH_LONG).show();
         finish();
     }
 }
